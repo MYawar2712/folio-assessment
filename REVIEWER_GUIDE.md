@@ -1,0 +1,27 @@
+# Reviewer Guide
+
+## Live product
+
+https://folio-assesment.vercel.app
+
+## Credentials
+
+No login is required. The app uses a seeded personal workspace for this MVP.
+
+## Sharing demonstration
+
+1. Open any document.
+2. Click **Share**.
+3. Select a seeded teammate such as `alex@ajaia.com`.
+4. Click **Send invite**.
+5. The document library will show the shared state.
+
+## Import demonstration
+
+Use **Import a document** and select `test-import.md` from the repository. Supported formats are `.txt` and `.md`.
+
+## Submission links
+
+- GitHub source: https://github.com/MYawar2712/folio-assessment
+- Live product: https://folio-assesment.vercel.app
+- Google Drive folder: PASTE_YOUR_GOOGLE_DRIVE_FOLDER_LINK_HERE
