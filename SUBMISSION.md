@@ -3,7 +3,7 @@
 - Source code: this repository
 - README and architecture note: `README.md`
 - AI workflow note: `README.md`
-- Live deployment: to be added after Vercel deployment
+- Live deployment: https://folio-assesment.vercel.app
 - Walkthrough video: to be added
 - Seeded reviewer flow: open the app, use the preloaded documents, then click Share and select a seeded teammate
 
