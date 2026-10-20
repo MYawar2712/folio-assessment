@@ -1,0 +1,34 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { createRoot } from 'react-dom/client';
+import './styles.css';
+
+const seedDocs = [
+  { id: 'welcome', title: 'Welcome to Folio', owner: 'You', updated: 'Just now', shared: false, content: '<h1>Welcome to Folio</h1><p>Your calm, focused space for collaborative work.</p><p>Try editing this document, import a <strong>.txt</strong> or <strong>.md</strong> file, then share it with a teammate.</p><h2>Quick start</h2><ul><li>Write with the simple toolbar above.</li><li>Changes save automatically in your browser.</li><li>Use Share to invite a seeded teammate.</li></ul>' },
+  { id: 'planning', title: 'Q4 Product Planning', owner: 'You', updated: 'Yesterday', shared: true, content: '<h1>Q4 Product Planning</h1><p><strong>North star:</strong> make team work feel effortless.</p><h2>Focus areas</h2><ol><li>Reduce time to first draft</li><li>Make sharing feel safe</li><li>Ship a thoughtful import flow</li></ol>' },
+];
+const people = ['alex@ajaia.com', 'maria@ajaia.com', 'yawar2712@gmail.com'];
+
+function App() {
+  const [docs, setDocs] = useState(() => JSON.parse(localStorage.getItem('folio-docs') || 'null') || seedDocs);
+  const [activeId, setActiveId] = useState(docs[0].id);
+  const [query, setQuery] = useState('');
+  const [toast, setToast] = useState('');
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareEmail, setShareEmail] = useState(people[0]);
+  const fileRef = useRef(null);
+  const active = docs.find(d => d.id === activeId) || docs[0];
+  const visible = useMemo(() => docs.filter(d => d.title.toLowerCase().includes(query.toLowerCase())), [docs, query]);
+
+  useEffect(() => localStorage.setItem('folio-docs', JSON.stringify(docs)), [docs]);
+  useEffect(() => { if (toast) { const t = setTimeout(() => setToast(''), 2400); return () => clearTimeout(t); } }, [toast]);
+  const update = (patch) => setDocs(ds => ds.map(d => d.id === active.id ? { ...d, ...patch, updated: 'Just now' } : d));
+  const newDoc = () => { const d = { id: crypto.randomUUID(), title: 'Untitled document', owner: 'You', updated: 'Just now', shared: false, content: '<h1>Untitled document</h1><p>Start writing...</p>' }; setDocs(ds => [d, ...ds]); setActiveId(d.id); };
+  const importFile = async (e) => { const file = e.target.files?.[0]; if (!file) return; if (!/\.(txt|md)$/i.test(file.name)) return setToast('Please choose a .txt or .md file.'); const text = await file.text(); const title = file.name.replace(/\.(txt|md)$/i, ''); const content = `<h1>${title}</h1><p>${text.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\n/g, '</p><p>')}</p>`; const d = { id: crypto.randomUUID(), title, owner: 'You', updated: 'Just now', shared: false, content }; setDocs(ds => [d, ...ds]); setActiveId(d.id); setToast('Imported as a new document'); e.target.value = ''; };
+  const share = () => { update({ shared: true, sharedWith: shareEmail }); setShareOpen(false); setToast(`Shared with ${shareEmail}`); };
+
+  return <div className="app"><aside className="sidebar"><div className="brand"><span className="brand-mark">F</span><span>folio</span></div><button className="new-btn" onClick={newDoc}><span>＋</span> New document</button><nav><button className="nav-item active">▤ <span>All documents</span></button><button className="nav-item">☆ <span>Starred</span></button></nav><div className="section-label">Workspace</div><div className="mini-card"><div className="avatar">Y</div><div><strong>Muhammad Yawar</strong><small>Personal workspace</small></div></div><div className="sidebar-bottom"><button className="nav-item">⚙ <span>Settings</span></button><small>Folio · Candidate build</small></div></aside>
+    <main className="main"><header className="topbar"><div><div className="eyebrow">MY WORKSPACE <span>·</span> ALL DOCUMENTS</div><h2>Documents</h2></div><div className="top-actions"><label className="search">⌕<input placeholder="Search documents" value={query} onChange={e => setQuery(e.target.value)} /></label><button className="icon-btn">?</button><div className="avatar large">Y</div></div></header><div className="content"><div className="doc-grid"><div className="grid-head"><span>{visible.length} documents</span><button className="sort">Recently edited⌄</button></div>{visible.map(d => <button className={`doc-card ${d.id === activeId ? 'selected' : ''}`} key={d.id} onClick={() => setActiveId(d.id)}><div className="doc-icon">▤</div><div className="doc-info"><strong>{d.title}</strong><span>{d.shared ? `Shared with ${d.sharedWith || 'team'}` : 'Private'} · {d.updated}</span></div><span className="more">•••</span></button>)}<button className="import-card" onClick={() => fileRef.current?.click()}><span>＋</span><div><strong>Import a document</strong><small>Bring in a .txt or .md file</small></div></button><input ref={fileRef} type="file" accept=".txt,.md,text/plain,text/markdown" hidden onChange={importFile} /></div>
+      <section className="editor-shell"><div className="editor-head"><div className="crumb">Documents <span>/</span> <input aria-label="Document title" value={active.title} onChange={e => update({ title: e.target.value })} /></div><div className="editor-actions"><span className="saved">✓ Saved</span><button className="share-btn" onClick={() => setShareOpen(true)}>Share <span>↗</span></button></div></div><div className="toolbar"><button onClick={() => document.execCommand('bold') }><b>B</b></button><button onClick={() => document.execCommand('italic')}><i>I</i></button><button onClick={() => document.execCommand('underline')}><u>U</u></button><span className="divider"/><button onClick={() => document.execCommand('formatBlock', false, 'h2')}>H2</button><button onClick={() => document.execCommand('insertUnorderedList')}>☷</button><button onClick={() => document.execCommand('insertOrderedList')}>☷</button></div><article className="editor" contentEditable suppressContentEditableWarning dangerouslySetInnerHTML={{ __html: active.content }} onInput={e => update({ content: e.currentTarget.innerHTML })} /></section></div></main>
+    {shareOpen && <div className="modal-backdrop" onClick={() => setShareOpen(false)}><div className="modal" onClick={e => e.stopPropagation()}><button className="close" onClick={() => setShareOpen(false)}>×</button><div className="modal-icon">↗</div><h3>Share document</h3><p>Invite a teammate to view and edit <strong>{active.title}</strong>.</p><label className="field-label">Person or email<select value={shareEmail} onChange={e => setShareEmail(e.target.value)}>{people.map(p => <option key={p}>{p}</option>)}</select></label><button className="primary" onClick={share}>Send invite</button><div className="access-note">Anyone you invite can edit this document.</div></div></div>}{toast && <div className="toast">✓ {toast}</div>}</div>;
+}
+createRoot(document.getElementById('root')).render(<App />);
