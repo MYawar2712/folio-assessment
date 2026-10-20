@@ -24,7 +24,7 @@ function App() {
 
   useEffect(() => localStorage.setItem('folio-docs', JSON.stringify(docs)), [docs]);
   useEffect(() => { if (toast) { const t = setTimeout(() => setToast(''), 2400); return () => clearTimeout(t); } }, [toast]);
-  const update = (patch) => setDocs(ds => ds.map(d => d.id === active.id ? { ...d, ...patch, updated: 'Just now' } : d));
+  const update = (patch) => { if (patch.content !== undefined) { const next = docs.map(d => d.id === active.id ? { ...d, ...patch, updated: 'Just now' } : d); localStorage.setItem('folio-docs', JSON.stringify(next)); return; } setDocs(ds => ds.map(d => d.id === active.id ? { ...d, ...patch, updated: 'Just now' } : d)); };
   const newDoc = () => { const d = { id: crypto.randomUUID(), title: 'Untitled document', owner: currentUser, updated: 'Just now', shared: false, content: '<h1>Untitled document</h1><p>Start writing...</p>' }; setDocs(ds => [d, ...ds]); setActiveId(d.id); };
   const importFile = async (e) => { const file = e.target.files?.[0]; if (!file) return; if (!/\.(txt|md)$/i.test(file.name)) return setToast('Please choose a .txt or .md file.'); const text = await file.text(); const title = file.name.replace(/\.(txt|md)$/i, ''); const content = `<h1>${title}</h1><p>${text.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\n/g, '</p><p>')}</p>`; const d = { id: crypto.randomUUID(), title, owner: 'You', updated: 'Just now', shared: false, content }; setDocs(ds => [d, ...ds]); setActiveId(d.id); setToast('Imported as a new document'); e.target.value = ''; };
   const share = () => { update({ shared: true, sharedWith: shareEmail }); setShareOpen(false); setToast(`Shared with ${shareEmail}`); };
