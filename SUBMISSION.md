@@ -1,15 +1,15 @@
 # Submission checklist
 
-- Source code: repository root and GitHub repository
+- Source code and submission materials: https://github.com/MYawar2712/folio-assessment
 - Setup and product notes: `README.md`
 - Architecture note: `ARCHITECTURE.md`
 - AI workflow note: `AI_WORKFLOW.md`
 - Exact included materials: `SUBMISSION.md`
 - Live deployment: https://folio-assesment.vercel.app
-- Walkthrough video URL: `WALKTHROUGH_VIDEO.txt` (paste public video URL before submission)
+- Walkthrough video URL: `WALKTHROUGH_VIDEO.txt`
 - Reviewer instructions and links: `REVIEWER_GUIDE.md`
 - Import sample: `test-import.md`
-- Google Drive folder: create a folder containing these files and paste its link in `REVIEWER_GUIDE.md`
+- Google Drive folder: not used; all submission materials are available in the GitHub repository above
 
 Screenshots or a demo GIF are not required because the deployed app is directly accessible and needs no extra setup.
 

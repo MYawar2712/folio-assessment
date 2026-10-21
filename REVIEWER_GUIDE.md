@@ -25,4 +25,5 @@ Use **Import a document** and select `test-import.md` from the repository. Suppo
 
 - GitHub source: https://github.com/MYawar2712/folio-assessment
 - Live product: https://folio-assesment.vercel.app
-- Google Drive folder: PASTE_YOUR_GOOGLE_DRIVE_FOLDER_LINK_HERE
+- Submission materials: https://github.com/MYawar2712/folio-assessment
+- Walkthrough video: https://drive.google.com/file/d/1XsOE_eEZiCuixtOZ2ZEr32wV4Fo0P-Nk/view?usp=sharing
